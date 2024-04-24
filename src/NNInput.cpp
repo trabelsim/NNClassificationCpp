@@ -8,11 +8,6 @@ std::vector<std::vector<float>> NN_Input::spiral_data(int points, int classes)
     std::vector<std::vector<float>> X(points * classes, std::vector<float>(2, 0.0f));
     std::vector<int> y(points * classes, 0);
 
-    // Random number generator
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<> dis(0.0, 0.2);
-
     for (int class_number = 0; class_number < classes; ++class_number)
     {
         int start_ix = points * class_number;
@@ -28,7 +23,7 @@ std::vector<std::vector<float>> NN_Input::spiral_data(int points, int classes)
         float start_angle = class_number * 4.0f;
         float end_angle = (class_number + 1) * 4.0f;
         for (int i = 0; i < points; ++i)
-            t.push_back(start_angle + (static_cast<float>(i) / (points - 1)) * (end_angle - start_angle) + dis(gen));
+            t.push_back(start_angle + (static_cast<float>(i) / (points - 1)) * (end_angle - start_angle) + randomGenerator(-1.0,1.0));
 
         // Populate X
         for (int i = start_ix; i < end_ix; ++i)
@@ -44,3 +39,21 @@ std::vector<std::vector<float>> NN_Input::spiral_data(int points, int classes)
 
     return X;
 }
+
+// std::vector<std::vector<float>> NN_Input::spiral_data(int points, int classes)
+// {
+//     std::vector<std::vector<float>> X(points, std::vector<float>(2));
+//     float angle_step = 2.0 * 3.14159265358979323846 / (float)classes;
+
+//     for (int i = 0; i < points; ++i)
+//     {
+//         float r = (float)i / (float)points * 5.0f;
+//         float angle = i * angle_step;
+//         float x1 = r * sin(angle);
+//         float x2 = r * cos(angle);
+//         X[i][0] = x1;
+//         X[i][1] = x2;
+//     }
+
+//     return X;
+// }

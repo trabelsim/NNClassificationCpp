@@ -195,32 +195,31 @@ std::vector<std::vector<float>> activationSoftMax_forward(std::vector<std::vecto
 {
     int n = getNumOfRows(matrix);
     int m = getNumOfColumns(matrix);
+    double maxVal = -std::numeric_limits<double>::infinity(); //why and how is that working?
 
     std::vector<std::vector<float>> outputMatrix(n, std::vector<float>(m));
 
-
-    //First calculate the exponential value of each matrix-element. => e^(value in place i,j)
-    for(int i=0; i< n; i++)
-    {
-        for(int j=0; j<m; j++)
-        {
-            outputMatrix[i][j] = pow(eulerConst,matrix[i][j]);
-        }
-    }
-
-    // Next calculate the overall sum of all the element (which values have been exponentiated)
-    double expSum = 0;
+    // Find the maximum value
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
         {
-            expSum += outputMatrix[i][j];
+            if (matrix[i][j] > maxVal)
+                maxVal = matrix[i][j];
         }
     }
 
-    // Finally we divide each element of the matrix by the calculated expSum.
+    // Next calculate the overall sum of all the element (which values have been exponentiated)
     for (int i = 0; i < n; i++)
     {
+        float expSum = 0; // Reset expSum for each row
+        for (int j = 0; j < m; j++)
+        {
+            outputMatrix[i][j] = std::exp(matrix[i][j] - maxVal);
+            expSum += outputMatrix[i][j];
+        }
+
+        // Finally we divide each element of the matrix by the calculated expSum.
         for (int j = 0; j < m; j++)
         {
             outputMatrix[i][j] = outputMatrix[i][j] / expSum;
@@ -228,5 +227,4 @@ std::vector<std::vector<float>> activationSoftMax_forward(std::vector<std::vecto
     }
 
     return outputMatrix;
-
 }
