@@ -39,21 +39,3 @@ std::vector<std::vector<float>> NN_Input::spiral_data(int points, int classes)
 
     return X;
 }
-
-// std::vector<std::vector<float>> NN_Input::spiral_data(int points, int classes)
-// {
-//     std::vector<std::vector<float>> X(points, std::vector<float>(2));
-//     float angle_step = 2.0 * 3.14159265358979323846 / (float)classes;
-
-//     for (int i = 0; i < points; ++i)
-//     {
-//         float r = (float)i / (float)points * 5.0f;
-//         float angle = i * angle_step;
-//         float x1 = r * sin(angle);
-//         float x2 = r * cos(angle);
-//         X[i][0] = x1;
-//         X[i][1] = x2;
-//     }
-
-//     return X;
-// }
