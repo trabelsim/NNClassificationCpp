@@ -4,6 +4,7 @@ class NN_Activation
 {
 public:
     NN_Activation(){};
+    std::vector<std::vector<double>> getOutput();
 
 protected:
     std::vector<std::vector<double>> outputValue;
@@ -16,12 +17,9 @@ public:
     std::vector<std::vector<double>> forward(std::vector<std::vector<double>> &matrix);
 };
 
-class NN_ActivationSoftMax : NN_Activation
+class NN_ActivationSoftMax : public NN_Activation
 {
 public:
     NN_ActivationSoftMax(){};
     std::vector<std::vector<double>> forward(std::vector<std::vector<double>> &matrix);
-
-private:
-
 };

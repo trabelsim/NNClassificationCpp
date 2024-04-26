@@ -7,6 +7,7 @@ set(SOURCES
     src/NNInput.cpp
     src/NNLoss.cpp
     src/NNActivation.cpp
+    src/NNAccuracy.cpp
     src/main.cpp)
 
 
@@ -15,6 +16,7 @@ set(HEADER_FILES
     include/NNHelper.h
     include/NNInput.h 
     include/NNLoss.h
+    include/NNAccuracy.h
     include/NNActivation.h)
 
 

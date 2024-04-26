@@ -55,3 +55,8 @@ std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::
     outputValue = outputMatrix;
     return outputMatrix;
 }
+
+std::vector<std::vector<double>> NN_Activation::getOutput()
+{
+    return outputValue;
+}

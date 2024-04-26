@@ -4,6 +4,7 @@
 #include "NNHelper.h"
 #include "NNActivation.h"
 #include "NNLoss.h"
+#include "NNAccuracy.h"
 
 using namespace std;
 
@@ -13,31 +14,33 @@ int main()
 
     // Prepare data
 
-    auto nnInput = NN_Input();
+    NN_Input nnInput;
     nnInput.spiral_data(100,3);
     auto spiralInput = nnInput.getInput();
-    
 
-    auto layer1 = NN_Layer_Dense(2, 3);
+    NN_Layer_Dense layer1(2, 3);
     auto l1Output = layer1.forward(spiralInput); // First layer forward
 
-    auto activationReLu = NN_ActivationReLU();
+    NN_ActivationReLU activationReLu;
     auto reLUOutput = activationReLu.forward(l1Output); // ReLU activation function forward on the hidden layer
 
-    auto layer2 = NN_Layer_Dense(3, 3);
+    NN_Layer_Dense layer2(3, 3);
     auto l2Output = layer2.forward(reLUOutput); // Second layer forward
 
-    auto activationSoftmax = NN_ActivationSoftMax();
+    NN_ActivationSoftMax activationSoftmax;
     auto softMaxOut = activationSoftmax.forward(l2Output); // Softmax activation function forward on the output layer
 
-    printMatrix(softMaxOut);
-
     // Loss categorical cross entropy
-    auto activationLossCategCrossEntropy = NN_CategoricalCrossEntropyLoss();
+    NN_CategoricalCrossEntropyLoss activationLossCategCrossEntropy;
     auto groundTruthInput = nnInput.getTrueInput();
-    auto loss = activationLossCategCrossEntropy.calculate(softMaxOut, groundTruthInput);
+    activationLossCategCrossEntropy.calculate(softMaxOut, groundTruthInput);
+    activationLossCategCrossEntropy.printLoss();
 
-    std::cout << "Loss: " << std::setprecision(10) <<loss << std::endl;
+    //Accuracy
+    NN_Accuracy accuracyStatistics;
+    auto originalSoftmaxMatrix = activationSoftmax.getOutput();
+    auto accuracyValue = accuracyStatistics.calculateAccuracy(originalSoftmaxMatrix, groundTruthInput);
+    accuracyStatistics.printAccuracy();
 
     return 0;
 }
