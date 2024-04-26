@@ -10,6 +10,9 @@ class NN_Input
 
         std::vector<int> getTrueInput() { return trueInput; };
 
+        int getNumPoints() { return points; }
+        int getNumClasses() { return classes; }
+
     private:
         /*
         Size of the matrix is num_of_Samples x num_of_features
@@ -24,5 +27,7 @@ class NN_Input
 
         std::vector<std::vector<double>> input;
         std::vector<int> trueInput;
+        int points;
+        int classes;
 };
 

@@ -43,7 +43,6 @@ std::vector<double> NN_CategoricalCrossEntropyLoss::forward(std::vector<std::vec
         matrixOutput[i] = -log(clippedValues[i][trueValues[i]]);
     }
     
-    printVector(matrixOutput);
     return matrixOutput;
 }
 

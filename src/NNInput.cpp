@@ -5,6 +5,9 @@
 
 std::vector<std::vector<double>> NN_Input::spiral_data(int points, int classes)
 {
+    this->points = points;
+    this->classes = classes;
+
     std::vector<std::vector<double>> X(points * classes, std::vector<double>(2, 0.0f));
     std::vector<int> y(points * classes, 0);
 

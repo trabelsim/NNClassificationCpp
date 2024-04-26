@@ -10,13 +10,15 @@ using namespace std;
 
 int main()
 {
-    cout << "NNGen" << endl;
+    cout << "NN Generator started. Have fun!" << endl;
 
     // Prepare data
 
     NN_Input nnInput;
     nnInput.spiral_data(100,3);
     auto spiralInput = nnInput.getInput();
+
+    std::cout << "Input data: " << nnInput.getNumPoints() << " points, " << nnInput.getNumClasses() << " classes." << std::endl;
 
     NN_Layer_Dense layer1(2, 3);
     auto l1Output = layer1.forward(spiralInput); // First layer forward
