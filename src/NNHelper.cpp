@@ -6,17 +6,19 @@ using namespace std;
 
 //Const values
 const double eulerConst = std::exp(1.0);
+const double minValueClipCatCrossEntropy = 1e-7; // almost 0
+const double maxValueClipCatCrossEntropy = 1 - 1e-7; // almost 1
 
-float randomGenerator(const float &minValue, const float &maxValue)
+double randomGenerator(const double &minValue, const double &maxValue)
 {
     std::mt19937_64 rng{};
     rng.seed(std::random_device{}());
     return std::uniform_real_distribution<>{minValue, maxValue}(rng);
 }
 
-std::vector<float> operator *(std::vector<std::vector<float>> matrix_, std::vector<float> vector_)
+std::vector<double> operator *(std::vector<std::vector<double>> matrix_, std::vector<double> vector_)
 {
-    std::vector<float> output{};
+    std::vector<double> output{};
     for (auto &&matrixVec : matrix_)
     {
         if (matrixVec.size() != vector_.size())
@@ -26,7 +28,7 @@ std::vector<float> operator *(std::vector<std::vector<float>> matrix_, std::vect
             return output;
         }
 
-        float matrixVecOut{0};
+        double matrixVecOut{0};
         for (int i = 0; i < matrixVec.size(); i++)
         {
             matrixVecOut += matrixVec[i] * vector_[i];
@@ -38,14 +40,14 @@ std::vector<float> operator *(std::vector<std::vector<float>> matrix_, std::vect
     return output;
 }
 
-std::vector<std::vector<float>> operator*(std::vector<std::vector<float>> matrix1, std::vector<std::vector<float>> matrix2)
+std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2)
 {
     auto n1 = matrix1.size();
     auto m1 = matrix1[0].size();
     auto n2 = matrix2.size();
     auto m2 = matrix2[0].size();
 
-    std::vector<std::vector<float>> output(n1, std::vector<float>(m2));
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m2));
 
     if (m1 != n2)
     {
@@ -74,9 +76,9 @@ std::vector<std::vector<float>> operator*(std::vector<std::vector<float>> matrix
 /*
     Method for adding values of two vectors together.
 */
-std::vector<float> operator+(std::vector<float> vec, std::vector<float> values)
+std::vector<double> operator+(std::vector<double> vec, std::vector<double> values)
 {
-    std::vector<float> output{};
+    std::vector<double> output{};
 
     if (vec.size() != values.size())
     {
@@ -96,9 +98,9 @@ std::vector<float> operator+(std::vector<float> vec, std::vector<float> values)
 /*
     Method for adding values of two vectors together.
 */
-std::vector<std::vector<float>> operator+(std::vector<std::vector<float>> matrix, std::vector<float> vector_)
+std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matrix, std::vector<double> vector_)
 {
-    std::vector<std::vector<float>> output{};
+    std::vector<std::vector<double>> output{};
 
     if (matrix[0].size() != vector_.size())
     {
@@ -116,7 +118,7 @@ std::vector<std::vector<float>> operator+(std::vector<std::vector<float>> matrix
     return output;
 }
 
-void printMatrix(const std::vector<std::vector<float>> matrix_)
+void printMatrix(const std::vector<std::vector<double>> matrix_)
 {
     auto n = matrix_.size();
     auto m = matrix_[0].size();
@@ -134,7 +136,7 @@ void printMatrix(const std::vector<std::vector<float>> matrix_)
     cout << endl;
 }
 
-void printVector(const std::vector<float> vector_)
+void printVector(const std::vector<double> vector_)
 {
     auto n = vector_.size();
     cout << "Vector size: " << 1 << " x " << n << endl;
@@ -147,12 +149,25 @@ void printVector(const std::vector<float> vector_)
          << endl;
 }
 
-std::vector<std::vector<float>> transpose(std::vector<std::vector<float>> matrix_)
+void printVector(const std::vector<int> vector_)
+{
+    auto n = vector_.size();
+    cout << "Vector size: " << 1 << " x " << n << endl;
+
+    for (auto &&el : vector_)
+    {
+        cout << el << " ";
+    }
+    cout << endl
+         << endl;
+}
+
+std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix_)
 {
     auto n = matrix_.size();
     auto m = matrix_[0].size();
 
-    std::vector<std::vector<float>> output(m, std::vector<float>(n));
+    std::vector<std::vector<double>> output(m, std::vector<double>(n));
 
     for (int i = 0; i < n; i++)
     {
@@ -165,66 +180,34 @@ std::vector<std::vector<float>> transpose(std::vector<std::vector<float>> matrix
     return output;
 }
 
-std::vector<std::vector<float>> activationReLU_forward(std::vector<std::vector<float>> &matrix)
+
+int getNumOfRows(const std::vector<std::vector<double>> &matrix)
 {
-    for(auto &&row : matrix)
+    return matrix.size();
+}
+
+int getNumOfColumns(const std::vector<std::vector<double>> &matrix)
+{
+    return matrix[0].size();
+}
+
+std::vector<std::vector<double>> clipValues(std::vector<std::vector<double>> &matrix)
+{
+
+    for (auto &&row : matrix)
     {
-        for(auto &&el : row)
+        for (auto &&el : row)
         {
-            if(el < 0)
+            if (el <= minValueClipCatCrossEntropy)
             {
-                el = 0;
+                el = minValueClipCatCrossEntropy;
+            }
+            else if(el >= maxValueClipCatCrossEntropy)
+            {
+                el = maxValueClipCatCrossEntropy;
             }
         }
     }
 
     return matrix;
-}
-
-int getNumOfRows(const std::vector<std::vector<float>> &matrix)
-{
-    return matrix.size();
-}
-
-int getNumOfColumns(const std::vector<std::vector<float>> &matrix)
-{
-    return matrix[0].size();
-}
-
-std::vector<std::vector<float>> activationSoftMax_forward(std::vector<std::vector<float>> &matrix)
-{
-    int n = getNumOfRows(matrix);
-    int m = getNumOfColumns(matrix);
-    double maxVal = -std::numeric_limits<double>::infinity(); //why and how is that working?
-
-    std::vector<std::vector<float>> outputMatrix(n, std::vector<float>(m));
-
-    // Find the maximum value
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            if (matrix[i][j] > maxVal)
-                maxVal = matrix[i][j];
-        }
-    }
-
-    // Next calculate the overall sum of all the element (which values have been exponentiated)
-    for (int i = 0; i < n; i++)
-    {
-        float expSum = 0; // Reset expSum for each row
-        for (int j = 0; j < m; j++)
-        {
-            outputMatrix[i][j] = std::exp(matrix[i][j] - maxVal);
-            expSum += outputMatrix[i][j];
-        }
-
-        // Finally we divide each element of the matrix by the calculated expSum.
-        for (int j = 0; j < m; j++)
-        {
-            outputMatrix[i][j] = outputMatrix[i][j] / expSum;
-        }
-    }
-
-    return outputMatrix;
 }

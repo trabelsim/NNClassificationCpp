@@ -5,13 +5,17 @@ set(SOURCES
     src/NNHelper.cpp
     src/NNLayer.cpp
     src/NNInput.cpp
+    src/NNLoss.cpp
+    src/NNActivation.cpp
     src/main.cpp)
 
 
 set(HEADER_FILES 
     include/NNLayer.h
     include/NNHelper.h
-    include/NNInput.h )
+    include/NNInput.h 
+    include/NNLoss.h
+    include/NNActivation.h)
 
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADER_FILES})

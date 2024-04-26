@@ -6,16 +6,16 @@ NN_Layer_Dense::NN_Layer_Dense(int numOfInputFeatures, int numOfNeurons) : weigh
 
 }
 
-std::vector<std::vector<float>> NN_Layer_Dense::forward(std::vector<std::vector<float>> &input)
+std::vector<std::vector<double>> NN_Layer_Dense::forward(std::vector<std::vector<double>> &input)
 {
     auto output = (input * weights_) + bias_;
     output_ = output;
     return output_;
 }
 
-std::vector<std::vector<float>> NN_Layer_Dense::createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons)
+std::vector<std::vector<double>> NN_Layer_Dense::createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons)
 {
-    std::vector<std::vector<float>> weights(numOfInputFeatures, std::vector<float>(numOfNeurons));
+    std::vector<std::vector<double>> weights(numOfInputFeatures, std::vector<double>(numOfNeurons));
     for (int i = 0; i < numOfInputFeatures; i++)
     {
         for (int j = 0; j < numOfNeurons; j++)
@@ -27,9 +27,9 @@ std::vector<std::vector<float>> NN_Layer_Dense::createWeightsMatrix(int &numOfIn
     return weights;
 }
 
-std::vector<float> NN_Layer_Dense::createBiasVector(int &numOfNeurons)
+std::vector<double> NN_Layer_Dense::createBiasVector(int &numOfNeurons)
 {
-    std::vector<float> biasVector(numOfNeurons);
+    std::vector<double> biasVector(numOfNeurons);
     for (int i = 0; i < numOfNeurons; i++)
     {
         biasVector[i] = 0;
@@ -38,17 +38,17 @@ std::vector<float> NN_Layer_Dense::createBiasVector(int &numOfNeurons)
     return biasVector;
 }
 
-std::vector<std::vector<float>> NN_Layer_Dense::getWeights()
+std::vector<std::vector<double>> NN_Layer_Dense::getWeights()
 {
     return weights_;
 }
 
-std::vector<float> NN_Layer_Dense::getBias()
+std::vector<double> NN_Layer_Dense::getBias()
 {
     return bias_;
 }
 
-std::vector<std::vector<float>> NN_Layer_Dense::getOutput()
+std::vector<std::vector<double>> NN_Layer_Dense::getOutput()
 {
     return output_;
 }

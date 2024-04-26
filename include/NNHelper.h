@@ -1,28 +1,28 @@
 #include <random>
+#include <iomanip>
 
 
 
-float randomGenerator(const float &minValue, const float &maxValue);
+double randomGenerator(const double &minValue, const double &maxValue);
 
-void printMatrix(const std::vector<std::vector<float>> matrix_);
+void printMatrix(const std::vector<std::vector<double>> matrix_);
 
-void printVector(const std::vector<float> vector_);
+void printVector(const std::vector<double> vector_);
 
-std::vector<float> operator*(std::vector<std::vector<float>> matrix_, std::vector<float> vector_);
+void printVector(const std::vector<int> vector_);
 
-std::vector<std::vector<float>> operator*(std::vector<std::vector<float>> matrix1, std::vector<std::vector<float>> matrix2);
+std::vector<double> operator*(std::vector<std::vector<double>> matrix_, std::vector<double> vector_);
 
-std::vector<float> operator+(std::vector<float> vec, std::vector<float> values);
+std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2);
 
-std::vector<std::vector<float>> operator+(std::vector<std::vector<float>> matrix, std::vector<float> vector_);
+std::vector<double> operator+(std::vector<double> vec, std::vector<double> values);
 
-std::vector<std::vector<float>> transpose(std::vector<std::vector<float>> matrix_);
+std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matrix, std::vector<double> vector_);
 
+std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix_);
 
-/*
-    Activation functions
+int getNumOfRows(const std::vector<std::vector<double>> &matrix);
 
-*/
-std::vector<std::vector<float>> activationReLU_forward(std::vector<std::vector<float>> &matrix);
+int getNumOfColumns(const std::vector<std::vector<double>> &matrix);
 
-std::vector<std::vector<float>> activationSoftMax_forward(std::vector<std::vector<float>> &matrix);
+std::vector<std::vector<double>> clipValues(std::vector<std::vector<double>> &matrix);
