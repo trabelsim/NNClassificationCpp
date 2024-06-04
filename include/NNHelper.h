@@ -21,6 +21,9 @@ std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matr
 
 std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix_);
 
+/* Sum the columns of a provided matrix*/
+std::vector<std::vector<double>> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix);
+
 int getNumOfRows(const std::vector<std::vector<double>> &matrix);
 
 int getNumOfColumns(const std::vector<std::vector<double>> &matrix);

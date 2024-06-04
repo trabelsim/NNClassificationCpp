@@ -2,6 +2,8 @@
 
 std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vector<double>> &matrix)
 {
+    input_ = matrix;
+
     for (auto &&row : matrix)
     {
         for (auto &&el : row)
@@ -13,12 +15,30 @@ std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vec
         }
     }
 
-    outputValue = matrix;
+    output_ = matrix;
+    return matrix;
+}
+
+std::vector<std::vector<double>> NN_ActivationReLU::backward(std::vector<std::vector<double>> &matrix)
+{
+    for (auto &&row : matrix)
+    {
+        for (auto &&el : row)
+        {
+            if (el < 0)
+            {
+                el = 0;
+            }
+        }
+    }
+
+    dInput_ = matrix;
     return matrix;
 }
 
 std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::vector<double>> &matrix)
 {
+    input_ = matrix;
     int n = getNumOfRows(matrix);
     int m = getNumOfColumns(matrix);
     double maxVal = -std::numeric_limits<double>::infinity(); // why and how is that working?
@@ -52,11 +72,11 @@ std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::
         }
     }
 
-    outputValue = outputMatrix;
+    output_ = outputMatrix;
     return outputMatrix;
 }
 
 std::vector<std::vector<double>> NN_Activation::getOutput()
 {
-    return outputValue;
+    return output_;
 }

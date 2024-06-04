@@ -8,9 +8,17 @@ NN_Layer_Dense::NN_Layer_Dense(int numOfInputFeatures, int numOfNeurons) : weigh
 
 std::vector<std::vector<double>> NN_Layer_Dense::forward(std::vector<std::vector<double>> &input)
 {
+    input_ = input;
     auto output = (input * weights_) + bias_;
     output_ = output;
     return output_;
+}
+
+std::vector<std::vector<double>> NN_Layer_Dense::backward(std::vector<std::vector<double>> &dValues)
+{
+    dWeights_ = transpose(input_) * dValues;
+    dBiases_ = sumElementsOnAxisZero(dValues);
+    dInputs_ = dValues * transpose(weights_);
 }
 
 std::vector<std::vector<double>> NN_Layer_Dense::createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons)

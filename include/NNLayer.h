@@ -8,6 +8,7 @@ class NN_Layer_Dense
 
         std::vector<std::vector<double>> forward(std::vector<std::vector<double>> &input);
 
+        std::vector<std::vector<double>> backward(std::vector<std::vector<double>> &dValues);
         /*
             Getters
         */
@@ -16,9 +17,16 @@ class NN_Layer_Dense
         std::vector<std::vector<double>> getOutput();
 
     private:
+        // Forward vars.
         std::vector<std::vector<double>> weights_;
         std::vector<double> bias_;
         std::vector<std::vector<double>> output_;
+
+        //Backward vars.
+        std::vector<std::vector<double>> input_; // stored to calculate the derivative during backpropagation
+        std::vector<std::vector<double>> dWeights_;
+        std::vector<std::vector<double>> dBiases_;
+        std::vector<std::vector<double>> dInputs_;
 
         std::vector<std::vector<double>> createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons);
         std::vector<double> createBiasVector(int &numOfNeurons);

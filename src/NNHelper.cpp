@@ -180,6 +180,24 @@ std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matr
     return output;
 }
 
+std::vector<std::vector<double>> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix)
+{
+    auto n = matrix.size();
+    auto m = matrix[0].size();
+
+    std::vector<std::vector<double>> output(1, std::vector<double>(n));
+
+    for (int i=0; i<n; i++)
+    {
+        for(int j=0; j < m; j++)
+        {
+            output[0][j] += matrix[i][j];
+        }
+    }
+
+    return output;
+
+}
 
 int getNumOfRows(const std::vector<std::vector<double>> &matrix)
 {
