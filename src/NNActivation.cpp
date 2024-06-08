@@ -1,4 +1,5 @@
 #include "NNActivation.h"
+#include <iostream>
 
 std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vector<double>> &matrix)
 {
@@ -21,7 +22,8 @@ std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vec
 
 std::vector<std::vector<double>> NN_ActivationReLU::backward(std::vector<std::vector<double>> &matrix)
 {
-    for (auto &&row : matrix)
+    dInput_ = matrix;
+    for (auto &&row : dInput_)
     {
         for (auto &&el : row)
         {
@@ -32,8 +34,7 @@ std::vector<std::vector<double>> NN_ActivationReLU::backward(std::vector<std::ve
         }
     }
 
-    dInput_ = matrix;
-    return matrix;
+    return dInput_;
 }
 
 std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::vector<double>> &matrix)
@@ -74,6 +75,63 @@ std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::
 
     output_ = outputMatrix;
     return outputMatrix;
+}
+
+std::vector<std::vector<double>> NN_ActivationSoftMax::backward(std::vector<std::vector<double>> &matrix)
+{
+    if (!((matrix.size() == dInput_.size()) && (matrix[0].size() == dInput_[0].size())))
+    {
+        std::cout << "Error - find a way to handle backward with different matrix shape." << std::endl;
+        return matrix;
+    }
+
+    dInput_ = std::vector<std::vector<double>>(matrix.size(), std::vector<double>(matrix[0].size(), 0.0));
+
+    // Iterate through each sample
+    for (int sample = 0; sample < output_.size(); sample++)
+    {
+        //  extract output and gradient's sample
+        std::vector<double> singleOutput = output_[sample];
+        std::vector<double> singledValues = matrix[sample];
+
+        // Reshape output to a column vector:
+        std::vector<std::vector<double>> singleOutputCol(singleOutput.size(), std::vector<double>(1));
+        for (int i = 0; i < singleOutputCol.size(); i++)
+        {
+            singleOutputCol[i][0] = singleOutput[i];
+        }
+
+        // Jacobian calculation
+        std::vector<std::vector<double>> jacobianMatrix = createDiagonalMatrix(singleOutput);
+        std::vector<std::vector<double>> outerProduct = singleOutputCol * transpose(singleOutputCol);
+
+        for(int i = 0; i < jacobianMatrix.size(); i++)
+        {
+            for(int j=0; j < jacobianMatrix[i].size(); j++)
+            {
+                jacobianMatrix[i][j] -= outerProduct[i][j];
+            }
+        }
+
+        // Convert the dSingleValues to a column vector as well
+        std::vector<std::vector<double>> singleDValuesCol(singledValues.size(), std::vector<double>(1));
+        for (int i = 0; i < singledValues.size(); i++)
+        {
+            singleDValuesCol[i][0] = singledValues[i];
+        }
+
+        //Finally we calculate the sample-wise gradient (dInput)
+        std::vector<std::vector<double>> gradient = jacobianMatrix * singleDValuesCol;
+
+        // Store it in the dInput
+        for(int i=0; i < gradient.size(); i++)
+        {
+            dInput_[sample][i] = gradient[i][0];
+        }
+    }
+
+    return dInput_;
+
 }
 
 std::vector<std::vector<double>> NN_Activation::getOutput()

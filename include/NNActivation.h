@@ -1,3 +1,6 @@
+#ifndef NN_ACTIVATION_H
+#define NN_ACTIVATION_H
+
 #include "NNHelper.h"
 
 class NN_Activation
@@ -26,4 +29,7 @@ class NN_ActivationSoftMax : public NN_Activation
 public:
     NN_ActivationSoftMax(){};
     std::vector<std::vector<double>> forward(std::vector<std::vector<double>> &matrix);
+    std::vector<std::vector<double>> backward(std::vector<std::vector<double>> &matrix);
 };
+
+#endif // NN_ACTIVATION_H

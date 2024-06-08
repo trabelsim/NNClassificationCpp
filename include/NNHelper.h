@@ -15,6 +15,10 @@ std::vector<double> operator*(std::vector<std::vector<double>> matrix_, std::vec
 
 std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2);
 
+std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2);
+
+std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, int scalar);
+
 std::vector<double> operator+(std::vector<double> vec, std::vector<double> values);
 
 std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matrix, std::vector<double> vector_);
@@ -29,3 +33,11 @@ int getNumOfRows(const std::vector<std::vector<double>> &matrix);
 int getNumOfColumns(const std::vector<std::vector<double>> &matrix);
 
 std::vector<std::vector<double>> clipValues(std::vector<std::vector<double>> &matrix);
+
+std::vector<std::vector<double>> createDiagonalMatrix(const std::vector<double>& vector);
+
+std::vector<std::vector<double>> createIdentityMatrix(int size);
+
+std::vector<std::vector<double>> sLToOneHotEncodedL(const std::vector<int> &yTrue, int labels);
+
+std::vector<int> oneHotEncodedToDiscrete(const std::vector<std::vector<int>> &yTrue);

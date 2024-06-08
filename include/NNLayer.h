@@ -16,7 +16,13 @@ class NN_Layer_Dense
         std::vector<double> getBias();
         std::vector<std::vector<double>> getOutput();
 
+        // Backwards
+        std::vector<std::vector<double>> getdWeights();
+        std::vector<std::vector<double>> getdBias();
+        std::vector<std::vector<double>> getdInput();
+
     private:
+        static constexpr double WEIGHTS_NORMALIZER = 0.1;
         // Forward vars.
         std::vector<std::vector<double>> weights_;
         std::vector<double> bias_;

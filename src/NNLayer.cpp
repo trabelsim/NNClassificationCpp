@@ -19,6 +19,7 @@ std::vector<std::vector<double>> NN_Layer_Dense::backward(std::vector<std::vecto
     dWeights_ = transpose(input_) * dValues;
     dBiases_ = sumElementsOnAxisZero(dValues);
     dInputs_ = dValues * transpose(weights_);
+    return dInputs_;
 }
 
 std::vector<std::vector<double>> NN_Layer_Dense::createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons)
@@ -28,7 +29,7 @@ std::vector<std::vector<double>> NN_Layer_Dense::createWeightsMatrix(int &numOfI
     {
         for (int j = 0; j < numOfNeurons; j++)
         {
-            weights[i][j] = randomGenerator(-1, 1);
+            weights[i][j] = WEIGHTS_NORMALIZER * randomGenerator(0, 1);
         }
     }
 
@@ -59,4 +60,19 @@ std::vector<double> NN_Layer_Dense::getBias()
 std::vector<std::vector<double>> NN_Layer_Dense::getOutput()
 {
     return output_;
+}
+
+std::vector<std::vector<double>> NN_Layer_Dense::getdWeights()
+{
+    return dWeights_;
+}
+
+std::vector<std::vector<double>> NN_Layer_Dense::getdBias()
+{
+    return dBiases_;
+}
+
+std::vector<std::vector<double>> NN_Layer_Dense::getdInput()
+{
+    return dInputs_;
 }

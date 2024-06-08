@@ -1,6 +1,7 @@
 #include "NNHelper.h"
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -71,6 +72,65 @@ std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matr
     }
 
     return output;
+}
+
+std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2)
+{
+    auto n1 = matrix1.size();
+    auto m1 = matrix1[0].size();
+    auto n2 = matrix2.size();
+    auto m2 = matrix2[0].size();
+
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m1));
+
+    if ((n1 != n2) || (m1 != m2))
+    {
+        cout << "E: DOT PRODUCT: Matrix vector size (" << n1 << " x " << m1 << ")"
+             << ") does not match second matrix size (" << n2 << " x " << m2 << ")" << endl;
+
+        return output;
+    }
+
+    for (int i = 0; i < n1; i++)
+    {
+        for (int j = 0; j < m1; j++)
+        {
+            if (matrix2[i][j] == 0.0)
+            {
+                // Handle error: division by zero
+                return {};
+            }
+
+            output[i][j] = matrix1[i][j] / matrix2[i][j];
+        }
+    }
+
+    return output;
+}
+
+std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, int scalar)
+{
+    if(scalar != 0)
+    {
+        auto n1 = matrix1.size();
+        auto m1 = matrix1[0].size();
+        std::vector<std::vector<double>> output(n1, std::vector<double>(m1));
+
+        for (int i = 0; i < n1; i++)
+        {
+            for (int j = 0; j < m1; j++)
+            {
+                output[i][j] = matrix1[i][j] / scalar;
+            }
+        }
+
+        return output;
+    }
+    else
+    {
+        return{};
+    }
+    
 }
 
 /*
@@ -228,4 +288,62 @@ std::vector<std::vector<double>> clipValues(std::vector<std::vector<double>> &ma
     }
 
     return matrix;
+}
+
+std::vector<std::vector<double>> createDiagonalMatrix(const std::vector<double> &vector)
+{
+    int vecSize = vector.size();
+    std::vector<std::vector<double>> output(vecSize, std::vector<double>(vecSize));
+
+    // Reset to 0 all values.
+    for (auto &&row : output)
+    {
+        for (auto &&el : row)
+        {
+            el = 0;
+        }
+    }
+
+    for(int i=0; i < vecSize; i++)
+    {
+        output[i][i] = vector[i];
+    }
+
+    return output;
+}
+
+std::vector<std::vector<double>> createIdentityMatrix(int size)
+{
+    std::vector<std::vector<double>> identityMatrix(size, std::vector<double>(size, 0.0));
+    
+    for (int i = 0; i < size; ++i)
+    {
+        identityMatrix[i][i] = 1.0;
+    }
+    return identityMatrix;
+}
+
+std::vector<std::vector<double>> sLToOneHotEncodedL(const std::vector<int> &yTrue, int labels)
+{
+    std::vector<std::vector<double>> oneHotEncodedLabels(yTrue.size(), std::vector<double>(labels, 0.0));
+
+    for (size_t i = 0; i < yTrue.size(); ++i)
+    {
+        oneHotEncodedLabels[i][yTrue[i]] = 1.0;
+    }
+    return oneHotEncodedLabels;
+}
+
+std::vector<int> oneHotEncodedToDiscrete(const std::vector<std::vector<int>> &yTrue)
+{
+    std::vector<int> discreteValues;
+
+    for(const auto& row : yTrue)
+    {
+        auto maxIterator = std::max_element(row.begin(), row.end());
+        int index = std::distance(row.begin(), maxIterator);
+        discreteValues.push_back(index);
+    }
+
+    return discreteValues;
 }
