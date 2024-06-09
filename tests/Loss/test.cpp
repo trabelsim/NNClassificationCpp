@@ -35,14 +35,6 @@ TEST_CASE("Loss Calculation with NN_CategoricalCrossEntropyLoss", "[NN_Loss]")
         REQUIRE(approxEqual(loss, expectedLoss));
     }
 
-    // SECTION("Edge case with zero probabilities")
-    // {
-    //     std::vector<std::vector<double>> predicted = {{0.0, 1.0}};
-    //     std::vector<int> trueValues = {0};
-
-    //     REQUIRE_THROWS_AS(lossFunction.calculate(predicted, trueValues), std::domain_error);
-    // }
-
     SECTION("Clipping values to prevent log(0)")
     {
         std::vector<std::vector<double>> predicted = {{1e-10, 1.0 - 1e-10}};

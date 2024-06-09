@@ -5,6 +5,7 @@
 #include "NNActivation.h"
 #include "NNLoss.h"
 #include "NNAccuracy.h"
+#include "Optimizers/SGD.h"
 
 using namespace std;
 
@@ -52,51 +53,64 @@ void forwardAndBackward()
     // Prepare data
 
     NN_Input nnInput;
-    nnInput.spiral_data(100, 3);
+    nnInput.spiral_data(5, 3);
     auto spiralInput = nnInput.getInput();
 
     std::cout << "Input data: " << nnInput.getNumPoints() << " points, " << nnInput.getNumClasses() << " classes." << std::endl;
 
     // NN Structure
-    NN_Layer_Dense layer1(2, 3);
+    NN_Layer_Dense layer1(2, 64);
     NN_ActivationReLU activationReLu;
-    NN_Layer_Dense layer2(3, 3);
-    NN_ActivationSMaxCategoricalCrossEntropyLoss activationLoss; // SoftMax and classifier combined loss and activation.
+    NN_Layer_Dense layer2(64, 3);
+    NN_ActivationSMaxCategoricalCrossEntropyLoss activationLoss; // SoftMax and classifier combined loss and activation - used to speed up the calculation of the gradients
     auto groundTruthInput = nnInput.getTrueInput();
     NN_Accuracy accuracyStatistics;
+    SGD sgdOptimizer;
 
-    // NN Flow - forward
-    std::cout << "FORWARD" << std::endl;
-    auto l1Output = layer1.forward(spiralInput); // First layer forward
-    auto reLUOutput = activationReLu.forward(l1Output); // ReLU activation function forward on the hidden layer
-    auto l2Output = layer2.forward(reLUOutput);         // Second layer forward
-    auto loss = activationLoss.forward(l2Output, groundTruthInput); // SoftMax and classifier combined loss and activation. - forward with the layer2 output.
-    std::cout << "Loss: " << loss[0] << std::endl;
+    int epoch = 0;
+    while(epoch <= 3000)
+    {
 
-    auto lossOutput = activationLoss.getOutput();
-    accuracyStatistics.calculateAccuracy(lossOutput, groundTruthInput);
-    accuracyStatistics.printAccuracy();
+        // NN Flow - forward
+        // std::cout << "FORWARD" << std::endl;
+        std::cout << "Epoch: " << epoch;
+        auto l1Output = layer1.forward(spiralInput);                    // First layer forward
+        auto reLUOutput = activationReLu.forward(l1Output);             // ReLU activation function forward on the hidden layer
+        auto l2Output = layer2.forward(reLUOutput);                     // Second layer forward
+        auto loss = activationLoss.forward(l2Output, groundTruthInput); // SoftMax and classifier combined loss and activation. - forward with the layer2 output.
 
-    // NN Flow - backward
-    std::cout << "BACKWARD" << std::endl;
-    auto dInputLossActivation = activationLoss.backward(lossOutput, groundTruthInput);
-    auto dInputLayer2 = layer2.backward(dInputLossActivation);
-    auto dInputActivationReLU = activationReLu.backward(dInputLayer2);
-    auto dInputLayer1 = layer1.backward(dInputActivationReLU);
-    std::cout << "END" << std::endl;
+        auto lossOutput = activationLoss.getOutput();
+        auto accuracy = accuracyStatistics.calculateAccuracy(lossOutput, groundTruthInput);
 
-    //Some printing - test
-    std::cout << "Layer1" << std::endl;
-    std::cout << "dWeights:" << std::endl;
-    printMatrix(layer1.getdWeights());
-    std::cout << "dBiases:" << std::endl;
-    printMatrix(layer1.getdBias());
+        std::cout << " loss: " << loss[0] << " accuracy: " << accuracy << std::endl;
 
-    std::cout << "Layer2" << std::endl;
-    std::cout << "dWeights:" << std::endl;
-    printMatrix(layer2.getdWeights());
-    std::cout << "dBiases:" << std::endl;
-    printMatrix(layer2.getdBias());
+        // NN Flow - backward
+        // std::cout << "BACKWARD" << std::endl;
+        auto dInputLossActivation = activationLoss.backward(lossOutput, groundTruthInput);
+        auto dInputLayer2 = layer2.backward(dInputLossActivation);
+        auto dInputActivationReLU = activationReLu.backward(dInputLayer2);
+        auto dInputLayer1 = layer1.backward(dInputActivationReLU);
+        // std::cout << "END" << std::endl;
+
+        sgdOptimizer.updateParameters(layer1);
+        sgdOptimizer.updateParameters(layer2);
+        epoch++;
+    }
+
+    
+
+    // //Some printing - test
+    // std::cout << "Layer1" << std::endl;
+    // std::cout << "dWeights:" << std::endl;
+    // printMatrix(layer1.getdWeights());
+    // std::cout << "dBiases:" << std::endl;
+    // printVector(layer1.getdBias());
+
+    // std::cout << "Layer2" << std::endl;
+    // std::cout << "dWeights:" << std::endl;
+    // printMatrix(layer2.getdWeights());
+    // std::cout << "dBiases:" << std::endl;
+    // printVector(layer2.getdBias());
 
 
 }
