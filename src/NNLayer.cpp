@@ -17,32 +17,11 @@ std::vector<std::vector<double>> NN_Layer_Dense::forward(std::vector<std::vector
 
 std::vector<std::vector<double>> NN_Layer_Dense::backward(std::vector<std::vector<double>> &dValues)
 {
-    // std::cout << "input: " << std::endl;
-    // printMatrix(input_);
-    
     auto transposedInput = transpose(input_);
-    // std::cout << "transposed input: " << std::endl;
-    // printMatrix(transposedInput);
-
     dWeights_ = transposedInput * dValues;
-    // std::cout << "dWeights: " << std::endl;
-    // printMatrix(dWeights_);
-
     dBiases_ = sumElementsOnAxisZero(dValues);
-    // std::cout << "dBiases: " << std::endl;
-    // printVector(dBiases_);
-
-    // std::cout << "Weights: " << std::endl;
-    // printMatrix(weights_);
-    
     auto transposedWeights = transpose(weights_);
-    // std::cout << "Transposed weights: " << std::endl;
-    // printMatrix(transposedWeights);
-
     dInputs_ = dValues * transposedWeights;
-    // std::cout << "dInput: " << std::endl;
-    // printMatrix(dInputs_);
-
     return dInputs_;
 }
 
