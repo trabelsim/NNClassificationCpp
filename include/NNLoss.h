@@ -24,8 +24,6 @@ class NN_CategoricalCrossEntropyLoss : public NN_Loss
 {
 public:
     NN_CategoricalCrossEntropyLoss(){};
-
-private:
     std::vector<double> forward(std::vector<std::vector<double>> &predictedValues, std::vector<int> &trueValues) override;
     std::vector<std::vector<double>> backward(std::vector<std::vector<double>> &dValues, std::vector<int> &trueValues) override;
 };

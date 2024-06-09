@@ -15,6 +15,10 @@ std::vector<double> operator*(std::vector<std::vector<double>> matrix_, std::vec
 
 std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2);
 
+std::vector<std::vector<double>> operator*(double scalar, std::vector<std::vector<double>> matrix);
+
+std::vector<double> operator*(double scalar, std::vector<double> vector);
+
 std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2);
 
 std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, int scalar);
@@ -23,10 +27,12 @@ std::vector<double> operator+(std::vector<double> vec, std::vector<double> value
 
 std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matrix, std::vector<double> vector_);
 
+std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2);
+
 std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix_);
 
 /* Sum the columns of a provided matrix*/
-std::vector<std::vector<double>> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix);
+std::vector<double> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix);
 
 int getNumOfRows(const std::vector<std::vector<double>> &matrix);
 

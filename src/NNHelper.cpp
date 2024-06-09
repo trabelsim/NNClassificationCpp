@@ -74,6 +74,35 @@ std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matr
     return output;
 }
 
+std::vector<std::vector<double>> operator*(double scalar, std::vector<std::vector<double>> matrix)
+{
+    auto n1 = matrix.size();
+    auto m1 = matrix[0].size();
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m1));
+
+    for (int i = 0; i < n1; i++)
+    {
+        for (int j = 0; j < m1; j++)
+        {
+            output[i][j] = matrix[i][j] * scalar;
+        }
+    }
+
+    return output;
+}
+
+std::vector<double> operator*(double scalar, std::vector<double> vector)
+{
+    std::vector<double> output(vector.size(), 0.0);
+
+    for (int i = 0; i < vector.size(); i++)
+    {
+        output[i] = vector[i] * scalar;
+    }
+
+    return output;
+}
+
 std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2)
 {
     auto n1 = matrix1.size();
@@ -138,7 +167,7 @@ std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matr
 */
 std::vector<double> operator+(std::vector<double> vec, std::vector<double> values)
 {
-    std::vector<double> output{};
+    std::vector<double> output(vec.size());
 
     if (vec.size() != values.size())
     {
@@ -149,7 +178,7 @@ std::vector<double> operator+(std::vector<double> vec, std::vector<double> value
 
     for (int i = 0; i < vec.size(); i++)
     {
-        output.push_back(vec[i] + values[i]);
+        output[i] = vec[i] + values[i];
     }
 
     return output;
@@ -173,6 +202,34 @@ std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matr
     for (auto &&row : matrix)
     {
         output.push_back(row + vector_);
+    }
+
+    return output;
+}
+
+std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2)
+{
+    auto n1 = matrix1.size();
+    auto m1 = matrix1[0].size();
+    auto n2 = matrix2.size();
+    auto m2 = matrix2[0].size();
+
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m1));
+
+    if ((n1 != n2) || (m1 != m2))
+    {
+        cout << "E: SUM: Matrix vector size (" << n1 << " x " << m1 << ")"
+             << ") does not match second matrix size (" << n2 << " x " << m2 << ")" << endl;
+
+        return output;
+    }
+
+    for (int i = 0; i < n1; i++)
+    {
+        for (int j = 0; j < m1; j++)
+        {
+            output[i][j] = matrix1[i][j] + matrix2[i][j];
+        }
     }
 
     return output;
@@ -240,18 +297,18 @@ std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matr
     return output;
 }
 
-std::vector<std::vector<double>> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix)
+std::vector<double> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix)
 {
     auto n = matrix.size();
     auto m = matrix[0].size();
 
-    std::vector<std::vector<double>> output(1, std::vector<double>(n));
+    std::vector<double> output(m, 0.0);
 
     for (int i=0; i<n; i++)
     {
         for(int j=0; j < m; j++)
         {
-            output[0][j] += matrix[i][j];
+            output[j] += matrix[i][j];
         }
     }
 

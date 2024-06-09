@@ -1,3 +1,6 @@
+#ifndef NN_LAYER_H
+#define NN_LAYER_H
+
 #include <vector>
 #include "NNHelper.h"
 
@@ -18,8 +21,14 @@ class NN_Layer_Dense
 
         // Backwards
         std::vector<std::vector<double>> getdWeights();
-        std::vector<std::vector<double>> getdBias();
+        std::vector<double> getdBias();
         std::vector<std::vector<double>> getdInput();
+
+        /*
+            Setters
+        */
+        std::vector<std::vector<double>> setWeights(std::vector<std::vector<double>>& newWeights);
+        std::vector<double> setBias(std::vector<double> &newBias);
 
     private:
         static constexpr double WEIGHTS_NORMALIZER = 0.1;
@@ -31,9 +40,11 @@ class NN_Layer_Dense
         //Backward vars.
         std::vector<std::vector<double>> input_; // stored to calculate the derivative during backpropagation
         std::vector<std::vector<double>> dWeights_;
-        std::vector<std::vector<double>> dBiases_;
+        std::vector<double> dBiases_;
         std::vector<std::vector<double>> dInputs_;
 
         std::vector<std::vector<double>> createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons);
         std::vector<double> createBiasVector(int &numOfNeurons);
 };
+
+#endif NN_LAYER_H

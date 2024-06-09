@@ -1,4 +1,5 @@
 #include "NNLayer.h"
+#include <iostream>
 
 NN_Layer_Dense::NN_Layer_Dense(int numOfInputFeatures, int numOfNeurons) : weights_(createWeightsMatrix(numOfInputFeatures, numOfNeurons)),
                                                                            bias_(createBiasVector(numOfNeurons))
@@ -16,9 +17,32 @@ std::vector<std::vector<double>> NN_Layer_Dense::forward(std::vector<std::vector
 
 std::vector<std::vector<double>> NN_Layer_Dense::backward(std::vector<std::vector<double>> &dValues)
 {
-    dWeights_ = transpose(input_) * dValues;
+    // std::cout << "input: " << std::endl;
+    // printMatrix(input_);
+    
+    auto transposedInput = transpose(input_);
+    // std::cout << "transposed input: " << std::endl;
+    // printMatrix(transposedInput);
+
+    dWeights_ = transposedInput * dValues;
+    // std::cout << "dWeights: " << std::endl;
+    // printMatrix(dWeights_);
+
     dBiases_ = sumElementsOnAxisZero(dValues);
-    dInputs_ = dValues * transpose(weights_);
+    // std::cout << "dBiases: " << std::endl;
+    // printVector(dBiases_);
+
+    // std::cout << "Weights: " << std::endl;
+    // printMatrix(weights_);
+    
+    auto transposedWeights = transpose(weights_);
+    // std::cout << "Transposed weights: " << std::endl;
+    // printMatrix(transposedWeights);
+
+    dInputs_ = dValues * transposedWeights;
+    // std::cout << "dInput: " << std::endl;
+    // printMatrix(dInputs_);
+
     return dInputs_;
 }
 
@@ -67,7 +91,7 @@ std::vector<std::vector<double>> NN_Layer_Dense::getdWeights()
     return dWeights_;
 }
 
-std::vector<std::vector<double>> NN_Layer_Dense::getdBias()
+std::vector<double> NN_Layer_Dense::getdBias()
 {
     return dBiases_;
 }
@@ -75,4 +99,16 @@ std::vector<std::vector<double>> NN_Layer_Dense::getdBias()
 std::vector<std::vector<double>> NN_Layer_Dense::getdInput()
 {
     return dInputs_;
+}
+
+std::vector<std::vector<double>> NN_Layer_Dense::setWeights(std::vector<std::vector<double>> &newWeights)
+{
+    weights_ = newWeights;
+    return weights_;
+}
+
+std::vector<double> NN_Layer_Dense::setBias(std::vector<double> &newBias)
+{
+    bias_ = newBias;
+    return bias_;
 }

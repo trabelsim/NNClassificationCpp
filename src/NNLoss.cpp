@@ -57,16 +57,28 @@ std::vector<std::vector<double>> NN_CategoricalCrossEntropyLoss::backward(std::v
         yTrueOneHot = sLToOneHotEncodedL(trueValues, numOfLabels);
     }
 
-    for(auto &&row : yTrueOneHot)
+    dInput_ = dValues;
+
+    // If labels are sparse, modify the gradient based on one-hot encoding
+    if (!yTrueOneHot.empty())
     {
-        for(auto el : row)
+        for (int i = 0; i < numOfSamples; i++)
         {
-            el *= -1.0;
+            for (int j = 0; j < numOfLabels; j++)
+            {
+                dInput_[i][j] *= -yTrueOneHot[i][j];
+            }
         }
     }
 
-    // Calculate gradient and normalize it.
-    dInput_ = (yTrueOneHot / dValues) / numOfSamples;
+    // Normalize gradient
+    for (auto &&row : dInput_)
+    {
+        for (auto &&value : row)
+        {
+            value /= numOfSamples;
+        }
+    }
 
     return dInput_;
 }
@@ -95,6 +107,14 @@ std::vector<std::vector<double>> NN_ActivationSMaxCategoricalCrossEntropyLoss::b
     {
         int y = trueValues[i];
         dInput_[i][y] -= 1.0;
+    }
+
+    for (auto &&row : dInput_)
+    {
+        for (auto &&value : row)
+        {
+            value /= numOfSamples;
+        }
     }
 
     return dInput_;
