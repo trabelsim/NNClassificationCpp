@@ -53,7 +53,8 @@ void forwardAndBackward()
     // Prepare data
 
     NN_Input nnInput;
-    nnInput.spiral_data(5, 3);
+    std::vector<int> groundTruthInput {};
+    nnInput.spiral_data(100, 3, groundTruthInput);
     auto spiralInput = nnInput.getInput();
 
     std::cout << "Input data: " << nnInput.getNumPoints() << " points, " << nnInput.getNumClasses() << " classes." << std::endl;
@@ -62,8 +63,8 @@ void forwardAndBackward()
     NN_Layer_Dense layer1(2, 64);
     NN_ActivationReLU activationReLu;
     NN_Layer_Dense layer2(64, 3);
-    NN_ActivationSMaxCategoricalCrossEntropyLoss activationLoss; // SoftMax and classifier combined loss and activation - used to speed up the calculation of the gradients
-    auto groundTruthInput = nnInput.getTrueInput();
+    // SoftMax and classifier combined loss and activation - used to speed up the calculation of the gradients
+    NN_ActivationSMaxCategoricalCrossEntropyLoss activationLoss;
     NN_Accuracy accuracyStatistics;
     SGD sgdOptimizer;
 
