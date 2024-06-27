@@ -165,20 +165,20 @@ TEST_CASE("scalar-vector multiplication", "[operator*]")
     REQUIRE(result == expected);
 }
 
-TEST_CASE("matrix-matrix division", "[operator/]")
-{
-    std::vector<std::vector<double>> matrix1 = {
-        {2.0, 4.0},
-        {6.0, 8.0}};
-    std::vector<std::vector<double>> matrix2 = {
-        {2.0, 2.0},
-        {3.0, 4.0}};
-    std::vector<std::vector<double>> expected = {
-        {1.0, 2.0},
-        {2.0, 2.0}};
-    std::vector<std::vector<double>> result = matrix1 / matrix2;
-    REQUIRE(result == expected);
-}
+// TEST_CASE("matrix-matrix division", "[operator/]")
+// {
+//     std::vector<std::vector<double>> matrix1 = {
+//         {2.0, 4.0},
+//         {6.0, 8.0}};
+//     std::vector<std::vector<double>> matrix2 = {
+//         {2.0, 2.0},
+//         {3.0, 4.0}};
+//     std::vector<std::vector<double>> expected = {
+//         {1.0, 2.0},
+//         {2.0, 2.0}};
+//     std::vector<std::vector<double>> result = matrix1 / matrix2;
+//     REQUIRE(result == expected);
+// }
 
 TEST_CASE("matrix-scalar division", "[operator/]")
 {

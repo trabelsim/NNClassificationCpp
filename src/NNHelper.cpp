@@ -48,7 +48,7 @@ std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matr
     auto n2 = matrix2.size();
     auto m2 = matrix2[0].size();
 
-    std::vector<std::vector<double>> output(n1, std::vector<double>(m2));
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m2, 0.0));
 
     if (m1 != n2)
     {
@@ -62,8 +62,6 @@ std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matr
     {
         for (int j = 0; j < m2; j++)
         {
-            output[i][j] = 0;
-
             for (int k = 0; k < n2; k++)
             {
                 output[i][j] += matrix1[i][k] * matrix2[k][j];
@@ -184,6 +182,25 @@ std::vector<double> operator+(std::vector<double> vec, std::vector<double> value
     return output;
 }
 
+std::vector<double> operator-(std::vector<double> vec1, std::vector<double> vec2)
+{
+    
+    if (vec1.size() != vec2.size())
+    {
+        cout << "E: SUB: Vector size (" << vec1.size() << ") does not match second vector size (" << vec2.size() << ")." << endl;
+
+        return {};
+    }
+    std::vector<double> output(vec2.size());
+
+    for (int i = 0; i < vec1.size(); i++)
+    {
+        output[i] = vec1[i] - vec2[i];
+    }
+
+    return output;
+}
+
 /*
     Method for adding values of two vectors together.
 */
@@ -235,6 +252,65 @@ std::vector<std::vector<double>> operator+(std::vector<std::vector<double>> matr
     return output;
 }
 
+std::vector<std::vector<double>> operator-(std::vector<std::vector<double>> matrix1, std::vector<std::vector<double>> matrix2)
+{
+    auto n1 = matrix1.size();
+    auto m1 = matrix1[0].size();
+    auto n2 = matrix2.size();
+    auto m2 = matrix2[0].size();
+
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m1, 0.0));
+
+    if ((n1 != n2) || (m1 != m2))
+    {
+        cout << "E: SUBTRACT: Matrix vector size (" << n1 << " x " << m1 << ")"
+             << ") does not match second matrix size (" << n2 << " x " << m2 << ")" << endl;
+
+        return output;
+    }
+
+    for (int i = 0; i < n1; i++)
+    {
+        for (int j = 0; j < m1; j++)
+        {
+            output[i][j] = matrix1[i][j] - matrix2[i][j];
+        }
+    }
+
+    return output;
+}
+
+std::vector<std::vector<double>> operator-(std::vector<std::vector<double>> matrix1, double scalar)
+{
+    auto n1 = matrix1.size();
+    auto m1 = matrix1[0].size();
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m1));
+
+    for (int i = 0; i < n1; i++)
+    {
+        for (int j = 0; j < m1; j++)
+        {
+            output[i][j] = matrix1[i][j] - scalar;
+        }
+    }
+
+    return output;
+}
+
+std::vector<double> operator-(std::vector<double> vector1, double scalar)
+{
+    auto n1 = vector1.size();
+    std::vector<double> output(n1, 0.0);
+    output = vector1;
+
+    for (int i = 0; i < n1; i++)
+    {
+        output[i] = vector1[i] - scalar;
+    }
+
+    return output;
+}
+
 void printMatrix(const std::vector<std::vector<double>> matrix_)
 {
     auto n = matrix_.size();
@@ -279,10 +355,15 @@ void printVector(const std::vector<int> vector_)
          << endl;
 }
 
-std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix_)
+std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matrix)
 {
-    auto n = matrix_.size();
-    auto m = matrix_[0].size();
+    if(matrix.empty())
+    {
+        return {};
+    }
+
+    auto n = matrix.size();
+    auto m = matrix[0].size();
 
     std::vector<std::vector<double>> output(m, std::vector<double>(n));
 
@@ -290,30 +371,32 @@ std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matr
     {
         for (int j = 0; j < m; j++)
         {
-            output[j][i] = matrix_[i][j];
+            output[j][i] = matrix[i][j];
         }
     }
 
     return output;
 }
 
-std::vector<double> sumElementsOnAxisZero(std::vector<std::vector<double>> matrix)
+std::vector<double> sumElementsOnAxisZero(std::vector<std::vector<double>>& matrix)
 {
-    auto n = matrix.size();
+    if(matrix.empty())
+    {
+        return {};
+    }
+    
     auto m = matrix[0].size();
+    std::vector<double> sum(m, 0.0);
 
-    std::vector<double> output(m, 0.0);
-
-    for (int i=0; i<n; i++)
+    for (const auto &row : matrix)
     {
         for(int j=0; j < m; j++)
         {
-            output[j] += matrix[i][j];
+            sum[j] += row[j];
         }
     }
 
-    return output;
-
+    return sum;
 }
 
 int getNumOfRows(const std::vector<std::vector<double>> &matrix)
@@ -328,10 +411,11 @@ int getNumOfColumns(const std::vector<std::vector<double>> &matrix)
 
 std::vector<std::vector<double>> clipValues(std::vector<std::vector<double>> &matrix)
 {
+    std::vector<std::vector<double>> output_ = matrix;
 
-    for (auto &&row : matrix)
+    for (auto &row : output_)
     {
-        for (auto &&el : row)
+        for (auto &el : row)
         {
             if (el <= minValueClipCatCrossEntropy)
             {
@@ -344,7 +428,7 @@ std::vector<std::vector<double>> clipValues(std::vector<std::vector<double>> &ma
         }
     }
 
-    return matrix;
+    return output_;
 }
 
 std::vector<std::vector<double>> createDiagonalMatrix(const std::vector<double> &vector)

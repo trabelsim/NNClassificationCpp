@@ -3,38 +3,34 @@
 
 double NN_Accuracy::calculateAccuracy(std::vector<std::vector<double>> &predictedValues, std::vector<int> &trueValues)
 {
-    int n = getNumOfRows(predictedValues);
-    int m = getNumOfColumns(predictedValues);
-    std::vector<double> predictionVector(n, 0);
-    std::vector<double> truthValuesVector(n, 0);
+    int n = predictedValues.size();
+    std::vector<int> predictions(n);
 
-    // get the maximum value and push it to the predictionMatrix
-    // get the ground truth index and assing the value from predictedValues to the vector of true values.
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; ++i)
     {
-        for(int j = 0; j < m; j++)
+        double max_val = predictedValues[i][0];
+        int max_index = 0;
+        for (int j = 1; j < predictedValues[i].size(); ++j)
         {
-            if (predictedValues[i][j] > predictionVector[i])
+            if (predictedValues[i][j] > max_val)
             {
-                predictionVector[i] = predictedValues[i][j];
-                truthValuesVector[i] = predictedValues[i][trueValues[i]];
+                max_val = predictedValues[i][j];
+                max_index = j;
             }
         }
+        predictions[i] = max_index;
     }
 
-    // Get the ground truth values based on the trueValues indexe vector
-    // Next compare it to the predictionVector values
-    // For a prediction = ground truth -> increase the counter of matched values.
-    int matchedValues = 0;
-    for (int i = 0; i < n; i++)
+    int correct_predictions = 0;
+    for (int i = 0; i < n; ++i)
     {
-        if(truthValuesVector[i] == predictionVector[i])
+        if (predictions[i] == trueValues[i])
         {
-            matchedValues++;
+            correct_predictions++;
         }
     }
 
-    accuracy = (double)matchedValues / (double)n;
+    accuracy = static_cast<double>(correct_predictions) / n;
     return accuracy;
 }
 

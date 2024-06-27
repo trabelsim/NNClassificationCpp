@@ -17,12 +17,12 @@ std::vector<std::vector<double>> NN_Input::spiral_data(int points, int classes, 
         int end_ix = points * (class_number + 1); // 100 * 1 = > 100
 
         // Generate radius
-        std::vector<double> r;
+        std::vector<double> r(points);
         for (int i = 0; i < points; ++i)
             r[i] = (static_cast<double>(i) / (points - 1)); // 0, 0.1, 0.2 ...
 
         // Generate angle
-        std::vector<double> t;
+        std::vector<double> t(points);
         double start_angle = class_number * 4.0f; // 0, 4, 8
         double end_angle = (class_number + 1) * 4.0f; // 4, 8, 12
         for (int i = 0; i < points; ++i)

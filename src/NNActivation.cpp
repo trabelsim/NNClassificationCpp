@@ -1,35 +1,35 @@
 #include "NNActivation.h"
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 
 std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vector<double>> &matrix)
 {
-    input_ = matrix;
+    // Remember input values
+    std::vector<std::vector<double>> relOutput = matrix;
 
-    for (auto &&row : matrix)
+    for (auto &row : relOutput)
     {
-        for (auto &&el : row)
+        for (auto &el : row)
         {
-            if (el < 0)
-            {
-                el = 0;
-            }
+            el = std::max(0.0, el);
         }
     }
 
-    output_ = matrix;
-    return matrix;
+    output_ = relOutput;
+    return relOutput;
 }
 
-std::vector<std::vector<double>> NN_ActivationReLU::backward(std::vector<std::vector<double>> &matrix)
+std::vector<std::vector<double>>& NN_ActivationReLU::backward(std::vector<std::vector<double>> &dValues)
 {
-    dInput_ = matrix;
+    dInput_ = dValues;
     for (auto &&row : dInput_)
     {
         for (auto &&el : row)
         {
-            if (el < 0)
+            if (el <= 0)
             {
-                el = 0;
+                el = 0.0;
             }
         }
     }
@@ -42,24 +42,15 @@ std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::
     input_ = matrix;
     int n = getNumOfRows(matrix);
     int m = getNumOfColumns(matrix);
-    double maxVal = -std::numeric_limits<double>::infinity(); // why and how is that working?
 
     std::vector<std::vector<double>> outputMatrix(n, std::vector<double>(m));
-
-    // Find the maximum value
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            if (matrix[i][j] > maxVal)
-                maxVal = matrix[i][j];
-        }
-    }
 
     // Next calculate the overall sum of all the element (which values have been exponentiated)
     for (int i = 0; i < n; i++)
     {
+        double maxVal = *std::max_element(matrix[i].begin(), matrix[i].end());
         double expSum = 0; // Reset expSum for each row
+
         for (int j = 0; j < m; j++)
         {
             outputMatrix[i][j] = std::exp(matrix[i][j] - maxVal);
@@ -69,7 +60,7 @@ std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::
         // Finally we divide each element of the matrix by the calculated expSum.
         for (int j = 0; j < m; j++)
         {
-            outputMatrix[i][j] = outputMatrix[i][j] / expSum;
+            outputMatrix[i][j] /=  expSum;
         }
     }
 
@@ -77,6 +68,7 @@ std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::
     return outputMatrix;
 }
 
+//TODO KUKU
 std::vector<std::vector<double>> NN_ActivationSoftMax::backward(std::vector<std::vector<double>> &matrix)
 {
     if (!((matrix.size() == dInput_.size()) && (matrix[0].size() == dInput_[0].size())))

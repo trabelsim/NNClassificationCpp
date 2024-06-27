@@ -1043,3 +1043,12 @@ dkms.conf
 *.uf2
 # Raspberry Pi Pico disassembler file
 *.dis
+
+#external
+externals
+tests/eigen-3.4.0.zip
+
+.vscode
+output.txt
+src/test*
+training_configs

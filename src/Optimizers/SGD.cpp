@@ -2,21 +2,13 @@
 #include "NNHelper.h"
 #include <iostream>
 
-void SGD::updateParameters(NN_Layer_Dense &parametersLayer)
+void SGD::updateParameters(NN_Layer_Dense &parametersLayer, double learningRate)
 {
-    // std::cout << "OLD WEIGHTS" << std::endl;
-    // printMatrix(parametersLayer.getWeights());
-    auto newWeights = -learningRate_ * parametersLayer.getdWeights();
-    newWeights = newWeights + parametersLayer.getWeights();
+    auto newWeights = -learningRate * parametersLayer.getdWeights();
+    newWeights = parametersLayer.getWeights() + newWeights;
     parametersLayer.setWeights(newWeights);
-    // std::cout << "NEW WEIGHTS" << std::endl;
-    // printMatrix(parametersLayer.getWeights());
 
-    // std::cout << "OLD BIASES" << std::endl;
-    // printVector(parametersLayer.getBias());
-    auto newBiases = -learningRate_ * parametersLayer.getdBias();
-    newBiases = newBiases + parametersLayer.getBias();
+    auto newBiases = -learningRate * parametersLayer.getdBias();
+    newBiases = parametersLayer.getBias() + newBiases;
     parametersLayer.setBias(newBiases);
-    // std::cout << "NEW BIASES" << std::endl;
-    // printVector(parametersLayer.getBias());
 }

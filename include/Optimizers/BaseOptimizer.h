@@ -3,8 +3,8 @@
 class BaseOptimizer
 {
 public:
-    BaseOptimizer(const double& learningRate) : learningRate_{learningRate} {};
+    BaseOptimizer();
 
 protected:
-    double learningRate_ {0.1};
+    double learningRate_ {0.8};
 };

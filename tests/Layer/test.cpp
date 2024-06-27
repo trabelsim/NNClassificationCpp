@@ -1,5 +1,6 @@
 #include <catch2/catch_all.hpp>
 #include "NNLayer.h"
+#include "Eigen/Dense"
 
 // Test cases for NN_Layer_Dense class
 TEST_CASE("NN_Layer_Dense class tests", "[NN_Layer_Dense]")

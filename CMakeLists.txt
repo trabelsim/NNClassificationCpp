@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(Catch2 REQUIRED)
 
 # Include directories
-include_directories(include)
+include_directories(include externals/eigen-3.4.0)
 
 set(SOURCES
     src/NNHelper.cpp
