@@ -1,16 +1,16 @@
 #include "NNLayer.h"
 #include <iostream>
 
-NN_Layer_Dense::NN_Layer_Dense(int numOfInputFeatures, int numOfNeurons) : weights_(createWeightsMatrix(numOfInputFeatures, numOfNeurons)),
-                                                                           bias_(createBiasVector(numOfNeurons))
+NN_Layer_Dense::NN_Layer_Dense(int numOfInputFeatures, int numOfNeurons)
 {
-
+    createWeightsMatrix(numOfInputFeatures, numOfNeurons);
+    createBiasVector(numOfNeurons);
 }
 
-std::vector<std::vector<double>>& NN_Layer_Dense::forward(std::vector<std::vector<double>> &input)
+std::vector<std::vector<double>> &NN_Layer_Dense::forward(std::vector<std::vector<double>> & input)
 {
     input_ = input;
-    auto output = (input * weights_) + bias_;
+    auto output = (input_ * weights_) + bias_;
     output_ = output;
     return output_;
 }
@@ -27,7 +27,7 @@ std::vector<std::vector<double>>& NN_Layer_Dense::backward(std::vector<std::vect
 
 std::vector<std::vector<double>> NN_Layer_Dense::createWeightsMatrix(int &numOfInputFeatures, int &numOfNeurons)
 {
-    std::vector<std::vector<double>> weights(numOfInputFeatures, std::vector<double>(numOfNeurons));
+    weights_.resize(numOfInputFeatures,std::vector<double>(numOfNeurons));
     double std_dev = sqrt(2.0 / (numOfInputFeatures + numOfNeurons)); //Xavier init.
     std::default_random_engine generator;
     std::normal_distribution<double> distribution(0.0, std_dev);
@@ -35,16 +35,18 @@ std::vector<std::vector<double>> NN_Layer_Dense::createWeightsMatrix(int &numOfI
     {
         for (int j = 0; j < numOfNeurons; j++)
         {
-            weights[i][j] = distribution(generator);
+            weights_[i][j] = distribution(generator);
         }
     }
 
-    return weights;
+    return weights_;
 }
 
 std::vector<double> NN_Layer_Dense::createBiasVector(int &numOfNeurons)
 {
-    return std::vector<double>(numOfNeurons, 0.0);
+    bias_.resize(numOfNeurons);
+    bias_ = std::vector<double>(numOfNeurons, 0.0);
+    return bias_;
 }
 
 std::vector<std::vector<double>>& NN_Layer_Dense::getWeights()

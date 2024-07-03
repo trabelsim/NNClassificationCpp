@@ -160,6 +160,16 @@ std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matr
     
 }
 
+std::vector<double> operator/(const std::vector<double> &vec, double scalar)
+{
+    std::vector<double> result(vec.size());
+    for (size_t i = 0; i < vec.size(); ++i)
+    {
+        result[i] = vec[i] / scalar;
+    }
+    return result;
+}
+
 /*
     Method for adding values of two vectors together.
 */

@@ -5,6 +5,7 @@
 #include "NNActivation.h"
 #include "NNLoss.h"
 #include "NNAccuracy.h"
+#include "NNActivationLoss.h"
 #include "Optimizers/SGD.h"
 
 using namespace std;
@@ -13,8 +14,9 @@ void forwardAndBackward(int numOfEpochs, double initialLearningRate)
 {
     cout << "NN trainer" << endl;
 
-    // Prepare data
 
+    double learningRateDecay = 1e-3;
+    // Prepare data
     NN_Input nnInput;
     std::vector<int> groundTruthInput {};
     std::vector<std::vector<double>> spiralInput = nnInput.spiral_data(100, 3, groundTruthInput);
@@ -27,6 +29,8 @@ void forwardAndBackward(int numOfEpochs, double initialLearningRate)
     NN_Layer_Dense layer2(64, 3);
     // SoftMax and classifier combined loss and activation - used to speed up the calculation of the gradients
     NN_ActivationSMaxCategoricalCrossEntropyLoss activationLoss; // kuku
+    NN_ActivationSoftMax activationSoftMax;
+    NN_CategoricalCrossEntropyLoss categCrossEntropyloss;
     NN_Accuracy accuracyStatistics;
     SGD sgdOptimizer;
     double learningRate = initialLearningRate;
@@ -41,10 +45,9 @@ void forwardAndBackward(int numOfEpochs, double initialLearningRate)
         auto reLUOutput = activationReLu.forward(l1Output);             // ReLU activation function forward on the hidden layer
         auto l2Output = layer2.forward(reLUOutput);                     // Second layer forward
         auto loss = activationLoss.forward(l2Output, groundTruthInput); // SoftMax and classifier combined loss and activation. - forward with the layer2 output.
-
+        
         auto lossOutput = activationLoss.getOutput();
         auto accuracy = accuracyStatistics.calculateAccuracy(lossOutput, groundTruthInput);
-
         std::cout << " loss: " << loss[0] << " accuracy: " << accuracy << std::endl;
 
         // NN Flow - backward
@@ -60,7 +63,9 @@ void forwardAndBackward(int numOfEpochs, double initialLearningRate)
 
         if (epoch % 100 == 0)
         {
-            learningRate *= 0.95;
+            // learning rate decay
+
+            learningRate /= (1/(1+ learningRateDecay * epoch)); 
         }
 
         // double max_gradient_magnitude = 0.0;
@@ -84,6 +89,8 @@ void forwardAndBackward(int numOfEpochs, double initialLearningRate)
 
 int main()
 {
-    forwardAndBackward(20000, 0.01);
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    forwardAndBackward(5000, 1);
     return 0;
 }

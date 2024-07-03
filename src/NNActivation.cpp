@@ -40,20 +40,20 @@ std::vector<std::vector<double>>& NN_ActivationReLU::backward(std::vector<std::v
 std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::vector<double>> &matrix)
 {
     input_ = matrix;
-    int n = getNumOfRows(matrix);
-    int m = getNumOfColumns(matrix);
+    int n = getNumOfRows(input_);
+    int m = getNumOfColumns(input_);
 
     std::vector<std::vector<double>> outputMatrix(n, std::vector<double>(m));
 
     // Next calculate the overall sum of all the element (which values have been exponentiated)
     for (int i = 0; i < n; i++)
     {
-        double maxVal = *std::max_element(matrix[i].begin(), matrix[i].end());
+        double maxVal = *std::max_element(input_[i].begin(), input_[i].end());
         double expSum = 0; // Reset expSum for each row
 
         for (int j = 0; j < m; j++)
         {
-            outputMatrix[i][j] = std::exp(matrix[i][j] - maxVal);
+            outputMatrix[i][j] = std::exp(input_[i][j] - maxVal);
             expSum += outputMatrix[i][j];
         }
 

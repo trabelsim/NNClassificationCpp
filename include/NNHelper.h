@@ -23,6 +23,8 @@ std::vector<double> operator*(double scalar, std::vector<double> vector);
 
 std::vector<std::vector<double>> operator/(std::vector<std::vector<double>> matrix1, int scalar);
 
+std::vector<double> operator/(const std::vector<double> &vec, double scalar);
+
 std::vector<double> operator+(std::vector<double> vec, std::vector<double> values);
 
 std::vector<double> operator-(std::vector<double> vec1, std::vector<double> vec2);
