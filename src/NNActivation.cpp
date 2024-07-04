@@ -6,6 +6,8 @@
 std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vector<double>> &matrix)
 {
     // Remember input values
+    input_.resize(matrix.size(), std::vector<double>(matrix[0].size()));
+    input_ = matrix;
     std::vector<std::vector<double>> relOutput = matrix;
 
     for (auto &row : relOutput)
@@ -20,25 +22,28 @@ std::vector<std::vector<double>> NN_ActivationReLU::forward(std::vector<std::vec
     return relOutput;
 }
 
-std::vector<std::vector<double>>& NN_ActivationReLU::backward(std::vector<std::vector<double>> &dValues)
+std::vector<std::vector<double>> NN_ActivationReLU::backward(std::vector<std::vector<double>> &dValues)
 {
-    dInput_ = dValues;
-    for (auto &&row : dInput_)
+    const double epsilon = 1e-15;
+    std::vector<std::vector<double>> dInput_ReLU = dValues;
+
+    for (size_t i = 0; i < dInput_ReLU.size(); ++i)
     {
-        for (auto &&el : row)
+        for (size_t j = 0; j < dInput_ReLU[i].size(); ++j)
         {
-            if (el <= 0)
+            if (input_[i][j] <= (double)epsilon)
             {
-                el = 0.0;
+                dInput_ReLU[i][j] = 0.0;
             }
         }
     }
 
-    return dInput_;
+    return dInput_ReLU;
 }
 
 std::vector<std::vector<double>> NN_ActivationSoftMax::forward(std::vector<std::vector<double>> &matrix)
 {
+    input_.resize(matrix.size(), std::vector<double>(matrix[0].size()));
     input_ = matrix;
     int n = getNumOfRows(input_);
     int m = getNumOfColumns(input_);

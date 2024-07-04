@@ -40,7 +40,6 @@ std::vector<double> NN_CategoricalCrossEntropyLoss::forward(std::vector<std::vec
 {
     int n = predictedValues.size();
     std::vector<double> losses(n);
-    std::cout << "losses n: " << n << std::endl;
 
     for (int i = 0; i < n; ++i)
     {
@@ -57,23 +56,21 @@ std::vector<std::vector<double>> NN_CategoricalCrossEntropyLoss::backward(std::v
     int numOfLabels = dValues[0].size();
     std::vector<std::vector<double>> yTrueOneHot;
 
-    // if(trueValues.size() == 1) // if labels are sparse, we turn them into one-hot enc.
-    // {
-    //     yTrueOneHot = sLToOneHotEncodedL(trueValues, numOfLabels);
-    // }
+    if(trueValues.size() == 1) // if labels are sparse, we turn them into one-hot enc.
+    {
+        yTrueOneHot = sLToOneHotEncodedL(trueValues, numOfLabels);
+    }
 
-    dInput_ = dValues;
-
-    // If labels are sparse, modify the gradient based on one-hot encoding
+   // If labels are sparse, modify the gradient based on one-hot encoding
     // if (!yTrueOneHot.empty())
     // {
-    //     for (int i = 0; i < numOfSamples; i++)
-    //     {
-    //         for (int j = 0; j < numOfLabels; j++)
-    //         {
-    //             dInput_[i][j] *= -yTrueOneHot[i][j];
-    //         }
-    //     }
+    for (int i = 0; i < numOfSamples; i++)
+    {
+        for (int j = 0; j < numOfLabels; j++)
+        {
+            dInput_[i][j] /= -yTrueOneHot[i][j];
+        }
+    }
     // }
 
     // Normalize gradient

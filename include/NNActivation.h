@@ -21,7 +21,7 @@ class NN_ActivationReLU : NN_Activation
 public:
     NN_ActivationReLU(){};
     std::vector<std::vector<double>> forward(std::vector<std::vector<double>> &matrix);
-    std::vector<std::vector<double>>& backward(std::vector<std::vector<double>> &matrix);
+    std::vector<std::vector<double>> backward(std::vector<std::vector<double>> &matrix);
 };
 
 class NN_ActivationSoftMax : public NN_Activation

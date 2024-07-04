@@ -48,21 +48,22 @@ std::vector<std::vector<double>> operator*(std::vector<std::vector<double>> matr
     auto n2 = matrix2.size();
     auto m2 = matrix2[0].size();
 
-    std::vector<std::vector<double>> output(n1, std::vector<double>(m2, 0.0));
-
+    
     if (m1 != n2)
     {
         cout << "E: DOT PRODUCT: Matrix vector size (" << n1 << " x " << m1 << ")"
              << ") does not match second matrix size (" << n2 << " x " << m2 << ")" << endl;
 
-        return output;
+        return {};
     }
 
-    for (int i = 0; i < n1; i++)
+    std::vector<std::vector<double>> output(n1, std::vector<double>(m2, 0.0));
+
+    for (int i = 0; i < n1; ++i)
     {
-        for (int j = 0; j < m2; j++)
+        for (int j = 0; j < m2; ++j)
         {
-            for (int k = 0; k < n2; k++)
+            for (int k = 0; k < m1; ++k)
             {
                 output[i][j] += matrix1[i][k] * matrix2[k][j];
             }
@@ -369,17 +370,27 @@ std::vector<std::vector<double>> transpose(std::vector<std::vector<double>> matr
 {
     if(matrix.empty())
     {
+        std::cout<< "ERROR TRANSPOSE" << std::endl;
         return {};
     }
 
     auto n = matrix.size();
     auto m = matrix[0].size();
 
+    for (const auto &row : matrix)
+    {
+        if (row.size() != m)
+        {
+            std::cout << "ERROR: Matrix rows are not of equal length" << std::endl;
+            return {};
+        }
+    }
+
     std::vector<std::vector<double>> output(m, std::vector<double>(n));
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; ++i)
     {
-        for (int j = 0; j < m; j++)
+        for (int j = 0; j < m; ++j)
         {
             output[j][i] = matrix[i][j];
         }
@@ -392,15 +403,24 @@ std::vector<double> sumElementsOnAxisZero(std::vector<std::vector<double>>& matr
 {
     if(matrix.empty())
     {
+        std::cout << "ERROR sumElementsOnAxisZero" << std::endl;
         return {};
     }
     
     auto m = matrix[0].size();
-    std::vector<double> sum(m, 0.0);
-
     for (const auto &row : matrix)
     {
-        for(int j=0; j < m; j++)
+        if (row.size() != m)
+        {
+            std::cout << "ERROR: Matrix rows are not of equal length" << std::endl;
+            return {};
+        }
+    }
+
+    std::vector<double> sum(m, 0.0);
+    for (const auto &row : matrix)
+    {
+        for(int j=0; j < m; ++j)
         {
             sum[j] += row[j];
         }

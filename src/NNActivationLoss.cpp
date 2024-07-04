@@ -34,11 +34,10 @@ std::vector<std::vector<double>> NN_ActivationSMaxCategoricalCrossEntropyLoss::b
 {
     int n = predictedValues.size();    // Number of samples
     int m = predictedValues[0].size(); // Number of classes
-    std::vector<std::vector<double>> dInputs(n, std::vector<double>(m));
-    
+    std::vector<std::vector<double>> dInputs = predictedValues;
+
     for (int i = 0; i < n; ++i)
     {
-        dInputs[i] = predictedValues[i];
         dInputs[i][trueValues[i]] -= 1.0; // Gradient calculation
     }
 
@@ -46,7 +45,7 @@ std::vector<std::vector<double>> NN_ActivationSMaxCategoricalCrossEntropyLoss::b
     {
         for (int j = 0; j < m; ++j)
         {
-            dInputs[i][j] /= n; // Normalize gradients by number of samples
+            dInputs[i][j] /= static_cast<double>(n); // Normalize gradients by number of samples
         }
     }
 
