@@ -43,10 +43,21 @@ The network consists of the following components:
 
 Here is a basic visual representation of the neural network architecture used:
 ```cpp
-   Input Layer       Hidden Layer        Output Layer
-   [ x1 ]            [ o1 ]             [ o1 ]
-   [ x2 ]   --->     [ o2 ]   --->       [ o2 ]
-                      ...                [ o3 ]
-   [ xn ]            [ o64 ]            [ o3 ]
-   (2 inputs)        (64 neurons)        (3 outputs)
+     +---------+        +---------+        +---------+
+     | Input   |        | Hidden  |        | Output  |
+     | Layer   |        | Layer   |        | Layer   |
+     +---------+        +---------+        +---------+
+        |                    |                  |
+        V                    V                  V
+     [ x1 ]               [ h1 ]              [ o1 ]
+     [ x2 ]  --->         [ h2 ]   --->        [ o2 ]
+     [ ... ]              [ ... ]             [ o3 ]
+     [ xn ]              [ h64 ]            (3 outputs)
+        |                    |                  |
+        V                    V                  V
+     +---------+        +---------+        +---------+
+     | ReLU    |        | SoftMax |        | Categorical |
+     | Activation|      | Activation|       | Cross-Entropy|
+     +---------+        +---------+        +---------+
+
 ```
